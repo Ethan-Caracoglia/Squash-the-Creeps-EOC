@@ -58,7 +58,7 @@ func _physics_process(delta):
 			# Check for a collision from above
 			if Vector3.UP.dot(collision.get_normal()) > 0.1:
 				mob.squash()
-				target_velocity = bounce_impulse
+				target_velocity.y = bounce_impulse
 				break
 			
 	# Moving the Character
