@@ -8,6 +8,8 @@ extends CharacterBody3D
 @export var jump_impulse = 20
 ## Impulse variable for bouncing off of the enemies when you jump on them
 @export var bounce_impulse = 15
+## A signal that emmits when the player gets hit
+signal hit
 ## Player desired velocity
 var target_velocity = Vector3.ZERO
 
@@ -30,6 +32,10 @@ func _physics_process(delta):
 		direction = direction.normalized()
 		# Point the player towards the movement direction
 		$pivot.basis = Basis.looking_at(direction)
+		
+		$AnimationPlayer.speed_scale = 4
+	else:
+		$AnimationPlayer.speed_scale = 1
 	
 	# Calculate Ground Velocity
 	target_velocity.x = direction.x * speed
@@ -64,3 +70,12 @@ func _physics_process(delta):
 	# Moving the Character
 	velocity = target_velocity
 	move_and_slide()
+	
+	$pivot.rotation.x = PI / 6 * velocity.y / jump_impulse
+
+func die():
+	hit.emit()
+	queue_free()
+
+func _on_enemy_detector_body_entered(body):
+	die()

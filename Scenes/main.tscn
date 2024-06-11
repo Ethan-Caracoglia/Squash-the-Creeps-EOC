@@ -1,8 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://dbtcmbsnilprt"]
+[gd_scene load_steps=12 format=3 uid="uid://dbtcmbsnilprt"]
 
 [ext_resource type="PackedScene" uid="uid://bm53n76sgdj52" path="res://Scenes/player.tscn" id="1_8v2dy"]
 [ext_resource type="Script" path="res://Scripts/main.gd" id="1_qa580"]
 [ext_resource type="PackedScene" uid="uid://beht2ism1p6r6" path="res://Scenes/mob.tscn" id="2_t2y80"]
+[ext_resource type="FontFile" uid="uid://xkky05dwasph" path="res://fonts/Montserrat-Medium.ttf" id="4_disvo"]
+[ext_resource type="Script" path="res://Scenes/score_label.gd" id="5_3hujs"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hwggg"]
 size = Vector3(60, 2, 60)
@@ -24,6 +26,10 @@ _data = {
 "tilts": PackedFloat32Array(0, 0, 0, 0, 0)
 }
 point_count = 5
+
+[sub_resource type="Theme" id="Theme_4431r"]
+default_font = ExtResource("4_disvo")
+default_font_size = 23
 
 [node name="main" type="Node"]
 script = ExtResource("1_qa580")
@@ -81,10 +87,54 @@ mesh = SubResource("CylinderMesh_fremr")
 curve = SubResource("Curve3D_bft56")
 
 [node name="spawn_location" type="PathFollow3D" parent="spawn_path"]
-transform = Transform3D(-0.999998, 0, 0.00149289, 0, 1, 0, -0.00149289, 0, -0.999998, 22, 0, -22)
+transform = Transform3D(-0.999997, 0, 0.00149289, 0, 1, 0, -0.00149289, 0, -0.999997, 22, 0, -22)
 
 [node name="mob_timer" type="Timer" parent="."]
 wait_time = 0.5
 autostart = true
 
+[node name="user_interface" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_4431r")
+
+[node name="score_label" type="Label" parent="user_interface"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "Score: 0"
+script = ExtResource("5_3hujs")
+
+[node name="retry" type="ColorRect" parent="user_interface"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0627451, 0.0627451, 0.0627451, 0.352941)
+
+[node name="retry_button" type="Label" parent="user_interface/retry"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -146.0
+offset_top = -14.5
+offset_right = 146.0
+offset_bottom = 14.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Press `ENTER` to restart"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+
+[connection signal="hit" from="player" to="." method="_on_player_hit"]
 [connection signal="timeout" from="mob_timer" to="." method="_on_mob_timer_timeout"]
